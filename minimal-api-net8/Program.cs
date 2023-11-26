@@ -14,6 +14,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapGet("/helloWorld/{id}", (string id) =>
+{
+    var output = 0;
+    var result = int.TryParse(id, out output) ? Results.Ok($"Hello World! {id}") : Results.BadRequest($"Failed to bind parameter {id}");
+    return result;
+});
+
 app.UseHttpsRedirection();
 
 app.Run();
