@@ -1,3 +1,5 @@
+using minimal_api_net8.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,15 +12,13 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+   app.UseSwagger();
+   app.UseSwaggerUI();
 }
 
-app.MapGet("/helloWorld/{id}", (string id) =>
+app.MapGet("/api/coupon", () =>
 {
-    var output = 0;
-    var result = int.TryParse(id, out output) ? Results.Ok($"Hello World! {id}") : Results.BadRequest($"Failed to bind parameter {id}");
-    return result;
+   return Results.Ok(CouponStore.couponList);
 });
 
 app.UseHttpsRedirection();
