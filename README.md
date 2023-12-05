@@ -1,2 +1,2 @@
-# minimal-api-net8
+# Minimal.Api.Net8
 .NET8 Minimal API
