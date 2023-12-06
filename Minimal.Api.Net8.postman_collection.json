@@ -1,0 +1,174 @@
+{
+	"info": {
+		"_postman_id": "c41018b6-e4ac-4a0c-a205-3f102c5b1cf6",
+		"name": "Minimal.Api.Net8",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Coupon",
+			"item": [
+				{
+					"name": "GetCoupons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-user-id",
+								"value": "JURAE008",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/api/coupon",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"api",
+								"coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetCoupon",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-user-id",
+								"value": "JURAE008",
+								"type": "default"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:7076/api/coupon/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"api",
+								"coupon",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateCoupon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-user-id",
+								"value": "JURAE008",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test dragon1\",\r\n    \"percent\": 10,\r\n    \"isActive\": \"Y\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/api/coupon",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"api",
+								"coupon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateCoupon",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "x-user-id",
+								"value": "JURAE008",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"test dragon12a1bfad\",\r\n    \"percent\": 10,\r\n    \"isActive\": \"Y\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/api/coupon/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"api",
+								"coupon",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteCoupon",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-user-id",
+								"value": "JURAE008",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7076/api/coupon/4",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7076",
+							"path": [
+								"api",
+								"coupon",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
