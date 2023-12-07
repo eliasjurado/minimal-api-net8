@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Infrastructure.Minimal.Api.Net8
+namespace Minimal.Api.Net8.Helpers
 {
     public static class Format
     {

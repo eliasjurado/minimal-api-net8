@@ -1,4 +1,5 @@
-﻿using Infrastructure.Minimal.Api.Net8;
+﻿
+using Minimal.Api.Net8.Helpers;
 using System.Net;
 
 namespace Minimal.Api.Net8.Models
