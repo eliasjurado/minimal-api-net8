@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Minimal.Api.Net8.Data;
 using Minimal.Api.Net8.Helpers;
 using Minimal.Api.Net8.Models;
 using Minimal.Api.Net8.Models.DTO;
@@ -51,6 +52,14 @@ namespace Minimal.Api.Net8.Endpoints
                 .WithName("DeleteCoupon")
                 .Accepts<string>("application/json")
                 .Produces<APIResponse<CouponDTO>>(200)
+                .Produces(400)
+                .Produces(401)
+                .Produces(403)
+                .RequireAuthorization();
+
+            app.MapGet("/api/coupon/search", SearchCoupons)
+                .WithName("SearchCoupons")
+                .Produces<APIResponse<ICollection<CouponDTO>>>(200)
                 .Produces(400)
                 .Produces(401)
                 .Produces(403)
@@ -238,6 +247,26 @@ namespace Minimal.Api.Net8.Endpoints
             response.Result = _mapper.Map<CouponDTO>(coupon);
             await _repository.RemoveAsync(coupon);
             await _repository.SaveAsync();
+            response.IsSuccess = true;
+            response.StatusCode = HttpStatusCode.OK;
+            response.Status = nameof(HttpStatusCode.OK);
+
+            return Results.Ok(response);
+        }
+
+        private async static Task<IResult> SearchCoupons(IMapper _mapper, [AsParameters] CouponSearchRequestDTO request, ApplicationDbContext _db)
+        {
+            APIResponse<ICollection<CouponDTO>> response = new();
+
+            await Task.Run(() =>
+            {
+                if (request.CouponName != null)
+                {
+                    response.Result = _db.Coupons.Where(u => u.Name.Contains(request.CouponName)).Skip((request.Page - 1) * request.PageSize).Take(request.PageSize).Select(x => _mapper.Map<CouponDTO>(x)).ToList();
+                }
+                response.Result = _db.Coupons.Skip((request.Page - 1) * request.PageSize).Take(request.PageSize).Select(x => _mapper.Map<CouponDTO>(x)).ToList();
+            });
+
             response.IsSuccess = true;
             response.StatusCode = HttpStatusCode.OK;
             response.Status = nameof(HttpStatusCode.OK);
