@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Minimal.Api.Net8.Helpers;
 using Minimal.Api.Net8.Models;
@@ -74,6 +75,7 @@ namespace Minimal.Api.Net8.Endpoints
             return Results.Ok(response);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         private async static Task<IResult> GetCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromHeader(Name = "x-user-id")] string userId, string id)
         {
             APIResponse<CouponDTO> response = new();
