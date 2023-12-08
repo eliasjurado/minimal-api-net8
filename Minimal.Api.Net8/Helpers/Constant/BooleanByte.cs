@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Minimal.Api.Net8.Helpers.Constant
+﻿namespace Minimal.Api.Net8.Helpers.Constant
 {
     public class BooleanByte
     {

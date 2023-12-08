@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Minimal.Api.Net8.Data;
 using Minimal.Api.Net8.Models;
 using Minimal.Api.Net8.Repository.IRepository;
 using System.Linq.Expressions;
-using static Azure.Core.HttpHeader;
 
 namespace Minimal.Api.Net8.Repository
 {
@@ -19,7 +17,7 @@ namespace Minimal.Api.Net8.Repository
 
         public async Task CreateAsync(Coupon coupon)
         {
-            _db.Add(coupon);
+            await Task.Run(() => _db.Add(coupon));
         }
 
         public async Task<Coupon> GetAsync(int id)
@@ -44,7 +42,7 @@ namespace Minimal.Api.Net8.Repository
 
         public async Task RemoveAsync(Coupon coupon)
         {
-            _db.Remove(coupon);
+            await Task.Run(() => _db.Remove(coupon));
         }
 
         public async Task SaveAsync()
@@ -54,7 +52,7 @@ namespace Minimal.Api.Net8.Repository
 
         public async Task UpdateAsync(Coupon coupon)
         {
-            _db.Coupons.Update(coupon);
+            await Task.Run(() => _db.Coupons.Update(coupon));
         }
     }
 }

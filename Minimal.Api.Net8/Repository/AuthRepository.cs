@@ -24,9 +24,10 @@ namespace Minimal.Api.Net8.Repository
             _configuration = configuration;
             secretKey = _configuration.GetValue<string>("ApiSettings:Secret");
         }
-        public bool IsUniqueUser(string userName)
+        public async Task<bool> IsUniqueUser(string userName)
         {
-            var user = _db.Users.FirstOrDefault(u => u.UserName == userName);
+            User user = new();
+            await Task.Run(() => user = _db.Users.FirstOrDefault(u => u.UserName == userName));
             return user == null;
         }
 
