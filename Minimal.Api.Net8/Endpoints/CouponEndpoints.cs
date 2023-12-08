@@ -15,30 +15,40 @@ namespace Minimal.Api.Net8.Endpoints
         {
             app.MapGet("/api/coupon", GetAllCoupon)
                 .WithName("GetCoupons")
-                .Produces<APIResponse<IEnumerable<CouponDTO>>>(200);
+                .Produces<APIResponse<IEnumerable<CouponDTO>>>(200)
+                .Produces(401)
+                .RequireAuthorization();
 
             app.MapGet("/api/coupon/{id}", GetCoupon)
                 .WithName("GetCoupon")
                 .Produces<APIResponse<CouponDTO>>(200)
-                .Produces(400);
+                .Produces(400)
+                .Produces(401)
+                .RequireAuthorization();
 
             app.MapPost("/api/coupon", CreateCoupon)
                 .WithName("CreateCoupon")
                 .Accepts<CouponRequestDTO>("application/json")
                 .Produces<APIResponse<CouponDTO>>(201)
-                .Produces(400);
+                .Produces(400)
+                .Produces(401)
+                .RequireAuthorization();
 
             app.MapPut("/api/coupon/{id}", UpdateCoupon)
                 .WithName("UpdateCoupon")
                 .Accepts<CouponRequestDTO>("application/json")
                 .Produces<APIResponse<CouponDTO>>(200)
-                .Produces(400);
+                .Produces(400)
+                .Produces(401)
+                .RequireAuthorization();
 
             app.MapDelete("/api/coupon/{id}", DeleteCoupon)
                 .WithName("DeleteCoupon")
                 .Accepts<string>("application/json")
                 .Produces<APIResponse<CouponDTO>>(200)
-                .Produces(400);
+                .Produces(400)
+                .Produces(401)
+                .RequireAuthorization();
         }
         private async static Task<IResult> GetAllCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromHeader(Name = "x-user-id")] string userId)
         {
@@ -87,7 +97,7 @@ namespace Minimal.Api.Net8.Endpoints
             response.Result = couponDto;
             response.StatusCode = HttpStatusCode.OK;
             response.Status = nameof(HttpStatusCode.OK);
-            return Results.Ok(couponDto);
+            return Results.Ok(response);
         }
 
         private async static Task<IResult> CreateCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, IValidator<CouponRequestDTO> _validator, [FromBody] CouponRequestDTO couponRequestDto, [FromHeader(Name = "x-user-id")] string userId)
