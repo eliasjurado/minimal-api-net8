@@ -17,13 +17,15 @@ namespace Minimal.Api.Net8.Endpoints
                 .WithName("GetCoupons")
                 .Produces<APIResponse<IEnumerable<CouponDTO>>>(200)
                 .Produces(401)
-                .RequireAuthorization();
+                .Produces(403)
+                .RequireAuthorization("AdminOnly"); //security policy
 
             app.MapGet("/api/coupon/{id}", GetCoupon)
                 .WithName("GetCoupon")
                 .Produces<APIResponse<CouponDTO>>(200)
                 .Produces(400)
                 .Produces(401)
+                .Produces(403)
                 .RequireAuthorization();
 
             app.MapPost("/api/coupon", CreateCoupon)
@@ -32,6 +34,7 @@ namespace Minimal.Api.Net8.Endpoints
                 .Produces<APIResponse<CouponDTO>>(201)
                 .Produces(400)
                 .Produces(401)
+                .Produces(403)
                 .RequireAuthorization();
 
             app.MapPut("/api/coupon/{id}", UpdateCoupon)
@@ -40,6 +43,7 @@ namespace Minimal.Api.Net8.Endpoints
                 .Produces<APIResponse<CouponDTO>>(200)
                 .Produces(400)
                 .Produces(401)
+                .Produces(403)
                 .RequireAuthorization();
 
             app.MapDelete("/api/coupon/{id}", DeleteCoupon)
@@ -48,6 +52,7 @@ namespace Minimal.Api.Net8.Endpoints
                 .Produces<APIResponse<CouponDTO>>(200)
                 .Produces(400)
                 .Produces(401)
+                .Produces(403)
                 .RequireAuthorization();
         }
         private async static Task<IResult> GetAllCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromHeader(Name = "x-user-id")] string userId)

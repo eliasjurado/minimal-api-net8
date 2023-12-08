@@ -63,7 +63,7 @@ namespace Minimal.Api.Net8.Repository
                 UserName = request.UserName,
                 Password = request.Password,
                 Name = request.Name,
-                Role = "Admin"
+                Role = "Customer"
             };
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
