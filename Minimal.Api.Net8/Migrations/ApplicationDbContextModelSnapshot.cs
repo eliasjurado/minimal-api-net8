@@ -70,7 +70,7 @@ namespace Minimal.Api.Net8.Migrations
                             IsDeleted = "\0",
                             Name = "10+2OFF",
                             Percent = 10.199999999999999,
-                            UpdatedAt = new DateTime(2023, 12, 5, 12, 0, 25, 578, DateTimeKind.Local).AddTicks(7279),
+                            UpdatedAt = new DateTime(2023, 12, 7, 19, 52, 30, 867, DateTimeKind.Local).AddTicks(4124),
                             UpdatedBy = "JURAE008"
                         },
                         new
@@ -82,9 +82,50 @@ namespace Minimal.Api.Net8.Migrations
                             IsDeleted = "\0",
                             Name = "20OFF",
                             Percent = 20.0,
-                            UpdatedAt = new DateTime(2023, 12, 5, 12, 0, 25, 578, DateTimeKind.Local).AddTicks(7295),
+                            UpdatedAt = new DateTime(2023, 12, 7, 19, 52, 30, 867, DateTimeKind.Local).AddTicks(4143),
                             UpdatedBy = "JURAE008"
                         });
+                });
+
+            modelBuilder.Entity("Minimal.Api.Net8.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsDeleted")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LocalUser", (string)null);
                 });
 #pragma warning restore 612, 618
         }

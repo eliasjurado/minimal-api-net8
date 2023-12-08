@@ -10,6 +10,7 @@ namespace Minimal.Api.Net8
         {
             CreateMap<Coupon, CouponRequestDTO>().ReverseMap();
             CreateMap<Coupon, CouponDTO>().ReverseMap();
+            CreateMap<User, UserDTO>().ReverseMap();
         }
     }
 }

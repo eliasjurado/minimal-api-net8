@@ -1,15 +1,10 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Minimal.Api.Net8;
 using Minimal.Api.Net8.Data;
-using Minimal.Api.Net8.Models;
-using Minimal.Api.Net8.Models.DTO;
-using FluentValidation;
-using System.Net;
-using Microsoft.EntityFrameworkCore;
-using Minimal.Api.Net8.Repository.IRepository;
-using Minimal.Api.Net8.Repository;
 using Minimal.Api.Net8.Endpoints;
+using Minimal.Api.Net8.Repository;
+using Minimal.Api.Net8.Repository.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ICouponRepository, CouponRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -32,7 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ConfigureCouponEndpoints();
-
+app.ConfigureAuthEndpoints();
 app.UseHttpsRedirection();
 
 app.Run();
