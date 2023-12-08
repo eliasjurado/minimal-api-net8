@@ -48,7 +48,7 @@ namespace Minimal.Api.Net8.Endpoints
         {
             APIResponse<UserDTO> response = new();
 
-            bool ifUserNameIsUnique = _repository.IsUniqueUser(request.UserName);
+            bool ifUserNameIsUnique = await _repository.IsUniqueUser(request.UserName);
             if (!ifUserNameIsUnique)
             {
                 response.Errors.Add("UserName already registered");

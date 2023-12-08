@@ -24,6 +24,23 @@ namespace Minimal.Api.Net8.Endpoints
 
             app.MapGet("/api/coupon/{id}", GetCoupon)
                 .WithName("GetCoupon")
+                .AddEndpointFilter(async (context, next) =>
+                {
+                    APIResponse<object> response = new();
+                    var id = context.GetArgument<string>(4);
+                    int output;
+                    if (!int.TryParse(id, out output))
+                    {
+                        response.Errors.Add("Invalid Id was received");
+                        return Results.BadRequest(response);
+                    }
+                    if (output == 0)
+                    {
+                        response.Errors.Add("Id received cannot be zero");
+                        return Results.BadRequest(response);
+                    }
+                    return await next(context);
+                })
                 .Produces<APIResponse<CouponDTO>>(200)
                 .Produces(400)
                 .Produces(401)
@@ -50,7 +67,6 @@ namespace Minimal.Api.Net8.Endpoints
 
             app.MapDelete("/api/coupon/{id}", DeleteCoupon)
                 .WithName("DeleteCoupon")
-                .Accepts<string>("application/json")
                 .Produces<APIResponse<CouponDTO>>(200)
                 .Produces(400)
                 .Produces(401)
