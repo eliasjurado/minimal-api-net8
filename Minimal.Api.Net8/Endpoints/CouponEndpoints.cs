@@ -8,11 +8,13 @@ using Minimal.Api.Net8.Models;
 using Minimal.Api.Net8.Models.DTO;
 using Minimal.Api.Net8.Repository.IRepository;
 using System.Net;
+using System.Security.Claims;
 
 namespace Minimal.Api.Net8.Endpoints
 {
     public static class CouponEndpoints
     {
+
         public static void ConfigureCouponEndpoints(this WebApplication app)
         {
             app.MapGet("/api/coupon", GetAllCoupon)
@@ -81,19 +83,22 @@ namespace Minimal.Api.Net8.Endpoints
                 .Produces(403)
                 .RequireAuthorization();
         }
-        private async static Task<IResult> GetAllCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromHeader(Name = "x-user-id")] string userId)
+
+        private async static Task<IResult> GetAllCoupon(HttpContext context, IConfiguration _configuration, ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger)
         {
             APIResponse<IEnumerable<CouponDTO>> response = new();
 
-            if (string.IsNullOrWhiteSpace(userId))
+            var userName = context.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Name)).Select(c => c.Value).SingleOrDefault();
+
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                response.Errors.Add("Invalid User Id was received");
+                response.Errors.Add("Invalid User Name was received");
                 return Results.BadRequest(response);
             }
 
             _logger.Log(LogLevel.Information, "Getting all Coupons");
             response.IsSuccess = true;
-            response.Result = (await _repository.GetAsync()).Select(coupon => _mapper.Map<CouponDTO>(coupon));
+            response.Result = (await _repository.GetAsync()).Select(_mapper.Map<CouponDTO>);
             response.StatusCode = HttpStatusCode.OK;
             response.Status = nameof(HttpStatusCode.OK);
 
@@ -101,13 +106,15 @@ namespace Minimal.Api.Net8.Endpoints
         }
 
         [Authorize(Roles = "Admin,Manager")]
-        private async static Task<IResult> GetCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromHeader(Name = "x-user-id")] string userId, string id)
+        private async static Task<IResult> GetCoupon(HttpContext context, ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, string id)
         {
             APIResponse<CouponDTO> response = new();
 
-            if (string.IsNullOrWhiteSpace(userId))
+            var userName = context.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Name)).Select(c => c.Value).SingleOrDefault();
+
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                response.Errors.Add("Invalid User Id was received");
+                response.Errors.Add("Invalid User Name was received");
                 return Results.BadRequest(response);
             }
 
@@ -129,17 +136,20 @@ namespace Minimal.Api.Net8.Endpoints
             response.Result = couponDto;
             response.StatusCode = HttpStatusCode.OK;
             response.Status = nameof(HttpStatusCode.OK);
+
             return Results.Ok(response);
         }
 
-        private async static Task<IResult> CreateCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, IValidator<CouponRequestDTO> _validator, [FromBody] CouponRequestDTO couponRequestDto, [FromHeader(Name = "x-user-id")] string userId)
+        private async static Task<IResult> CreateCoupon(HttpContext context, ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, IValidator<CouponRequestDTO> _validator, [FromBody] CouponRequestDTO couponRequestDto)
         {
             var date = DateTime.Now;
             APIResponse<CouponDTO> response = new();
 
-            if (string.IsNullOrWhiteSpace(userId))
+            var userName = context.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Name)).Select(c => c.Value).SingleOrDefault();
+
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                response.Errors.Add("Invalid User Id was received");
+                response.Errors.Add("Invalid User Name was received");
                 return Results.BadRequest(response);
             }
 
@@ -163,8 +173,8 @@ namespace Minimal.Api.Net8.Endpoints
             coupon.IsActive = couponRequestDto.IsActive;
             coupon.CreatedAt = date;
             coupon.UpdatedAt = date;
-            coupon.CreatedBy = userId;
-            coupon.UpdatedBy = userId;
+            coupon.CreatedBy = userName;
+            coupon.UpdatedBy = userName;
 
             await _repository.CreateAsync(coupon);
             await _repository.SaveAsync();
@@ -177,25 +187,25 @@ namespace Minimal.Api.Net8.Endpoints
             return Results.CreatedAtRoute("GetCoupon", new { id = coupon.Id }, response);
         }
 
-        private async static Task<IResult> UpdateCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, IValidator<CouponRequestDTO> _validator, [FromBody] CouponRequestDTO couponRequestDto, [FromHeader(Name = "x-user-id")] string userId, string id)
+        private async static Task<IResult> UpdateCoupon(HttpContext context, ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, IValidator<CouponRequestDTO> _validator, [FromBody] CouponRequestDTO couponRequestDto, string id)
         {
-            var output = 0;
             APIResponse<CouponDTO> response = new();
 
-            if (string.IsNullOrWhiteSpace(userId))
+            var userName = context.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Name)).Select(c => c.Value).SingleOrDefault();
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                response.Errors.Add("Invalid User Id was received");
+                response.Errors.Add("Invalid User Name was received");
                 return Results.BadRequest(response);
             }
 
             var validationResult = await _validator.ValidateAsync(couponRequestDto);
-
             if (!validationResult.IsValid)
             {
                 validationResult.Errors.ForEach(x => response.Errors.Add(x.ErrorMessage));
                 return Results.BadRequest(response);
             }
 
+            int output;
             if (!int.TryParse(id, out output))
             {
                 response.Errors.Add("Invalid Id was received");
@@ -220,7 +230,7 @@ namespace Minimal.Api.Net8.Endpoints
             coupon.IsActive = couponRequestDto.IsActive;
             coupon.Name = couponRequestDto.Name;
             coupon.Percent = couponRequestDto.Percent;
-            coupon.UpdatedBy = userId;
+            coupon.UpdatedBy = userName;
             coupon.UpdatedAt = DateTime.Now;
 
             await _repository.UpdateAsync(coupon);
@@ -232,16 +242,16 @@ namespace Minimal.Api.Net8.Endpoints
             response.Status = nameof(HttpStatusCode.OK);
 
             return Results.Ok(response);
-
         }
 
-        private async static Task<IResult> DeleteCoupon(ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromHeader(Name = "x-user-id")] string userId, string id)
+        private async static Task<IResult> DeleteCoupon(HttpContext context, ICouponRepository _repository, IMapper _mapper, ILogger<Program> _logger, string id)
         {
             APIResponse<CouponDTO> response = new();
 
-            if (string.IsNullOrWhiteSpace(userId))
+            var userName = context.User.Claims.Where(c => c.Type.Equals(ClaimTypes.Name)).Select(c => c.Value).SingleOrDefault();
+            if (string.IsNullOrWhiteSpace(userName))
             {
-                response.Errors.Add("Invalid User Id was received");
+                response.Errors.Add("Invalid User Name was received");
                 return Results.BadRequest(response);
             }
 
@@ -289,5 +299,6 @@ namespace Minimal.Api.Net8.Endpoints
 
             return Results.Ok(response);
         }
+
     }
 }

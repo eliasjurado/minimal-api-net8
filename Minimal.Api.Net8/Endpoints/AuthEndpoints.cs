@@ -24,7 +24,7 @@ namespace Minimal.Api.Net8.Endpoints
                 .Produces<APIResponse<UserDTO>>(200)
                 .Produces(400);
         }
-        private async static Task<IResult> SignIn(IAuthRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromBody] SignInRequestDTO request, [FromHeader(Name = "x-user-id")] string userId)
+        private async static Task<IResult> SignIn(IAuthRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromBody] SignInRequestDTO request)
         {
             APIResponse<SignInResponseDTO> response = new();
             var signInResponse = await _repository.SignIn(request);
@@ -44,7 +44,7 @@ namespace Minimal.Api.Net8.Endpoints
             return Results.Ok(response);
         }
 
-        private async static Task<IResult> SignUp(IAuthRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromBody] SignUpRequestDTO request, [FromHeader(Name = "x-user-id")] string userId)
+        private async static Task<IResult> SignUp(IAuthRepository _repository, IMapper _mapper, ILogger<Program> _logger, [FromBody] SignUpRequestDTO request)
         {
             APIResponse<UserDTO> response = new();
 
